@@ -14,7 +14,10 @@ public class ReviewServices {
         try (Session session = Configuration.getSessionFactory().openSession()) {
             List<String> reviews = session.createQuery(
                     "select description from ReviewModel where id_movie=" + movieId).getResultList();
+            System.out.println("----------------------------------------------");
+            System.out.println("Reviews: ");
             reviews.forEach(review -> System.out.println(review));
+            System.out.println("----------------------------------------------");
         } catch (Exception e) {
             e.printStackTrace();
         }

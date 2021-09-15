@@ -74,12 +74,10 @@ public class UserDetailModel {
 
     @Override
     public String toString() {
-        return "UserDetailModel{" +
-                "id=" + id +
-                ", country='" + country + '\'' +
-                ", age=" + age +
-                ", gender='" + gender + '\'' +
-                '}';
+        return
+                "country " + country + "\n" +
+                        "age " + age + "\n" +
+                        "gender " + gender;
     }
 
 }

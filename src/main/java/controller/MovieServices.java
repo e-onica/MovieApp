@@ -8,8 +8,11 @@ import model.dto.RatingModel;
 import model.dto.ReviewModel;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import view.ui.MovieUi;
 
 import java.util.List;
+
+import static java.lang.Math.round;
 
 public class MovieServices {
     Generic<MovieModel> genericObject = new Generic<>();
@@ -26,9 +29,9 @@ public class MovieServices {
         MovieModel foundMovie = genericObject.searchByName(movieName, movie);
 
         if (foundMovie != null) {
-            System.out.println(foundMovie);
-        } else {
-            System.out.println("Sorry we couldn't find anything");
+            System.out.println("----------------------------------------------");
+            foundMovie.printMovieDetails();
+            System.out.println("----------------------------------------------");
         }
         return foundMovie;
     }
@@ -44,17 +47,41 @@ public class MovieServices {
             }
             session.beginTransaction();
             MovieModel movie = session.get(MovieModel.class, movieId);
-            movie.setRating(sum / counter);
+            movie.setRating((Math.floor((sum / counter) * 100)) / 10);
             session.save(movie);
             session.getTransaction().commit();
-            return sum / counter;
+            return (Math.floor((sum / counter) * 100)) / 10;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return 0;
     }
 
+    public void viewTopMovies() {
+        try (Session session = Configuration.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            List<MovieModel> topMovies = session.createQuery("FROM MovieModel where rating >= 4 ").list();
+            for (MovieModel movie : topMovies) {
+                System.out.println("----" + movie.toString());
+            }
+            System.out.println("----------------------------------------------");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void viewNewMovies() {
+        try (Session session = Configuration.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            List<MovieModel> newMovies = session.createQuery("FROM MovieModel where year >= 2010 ").list();
+            for (MovieModel movie : newMovies) {
+                System.out.println(movie.printMovieDetails());
+            }
+            System.out.println("----------------------------------------------");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

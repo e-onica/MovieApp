@@ -107,29 +107,27 @@ public class MovieModel {
         return this;
     }
 
-    public List<ReviewModel> getReviews() {
-        return reviews;
-    }
-
-    public MovieModel setReviews(List<ReviewModel> reviews) {
-        this.reviews = reviews;
-        return this;
-    }
-
-    public List<RatingModel> getRatings() {
-        return ratings;
-    }
-
-    public MovieModel setRatings(List<RatingModel> ratings) {
-        this.ratings =ratings;
-        return this;
-    }
 
     @Override
     public String toString() {
         return name + ", "
                 + year + ", "
                 + genre + ", "
-                + duration;
+                + duration + ", "
+                + rating + " rating";
     }
+    public String printMovieDetails() {
+        if(rating == 0.0){
+            return name + ", "
+                    + year + ", "
+                    + genre + ", "
+                    + duration;
+        }
+        return this.toString();
+    }
+
 }
+
+
+
+

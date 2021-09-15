@@ -6,7 +6,9 @@ import model.dto.UserDetailModel;
 import model.dto.UserModel;
 import org.hibernate.Session;
 
+import javax.swing.*;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,6 +23,12 @@ public class UserUi {
 
         Scanner scanner = new Scanner(System.in).useDelimiter("\n");
         int choice = scanner.nextInt();
+        while(choice != 1 && choice !=2){
+            System.out.println("Your choice is not valid");
+            System.out.println("Enter 1 for registration");
+            System.out.println("Enter 2 for Log in, if you already have an account");
+            choice = scanner.nextInt();
+        }
 
         UserServices userServices = new UserServices();
 
@@ -37,11 +45,10 @@ public class UserUi {
                 int age = sc.nextInt();
                 System.out.println("Enter gender ");
                 String gender = sc.next();
-                System.out.println("Your data are being saved");
                 UserDetailModel userDetail = new UserDetailModel(country, age, gender);
                 UserModel user = new UserModel(email, password, userDetail);
                 userServices.addUser(user);
-                break;
+                logIn();
             }
             case 2: {
                 boolean isDataValid = false;
@@ -54,8 +61,29 @@ public class UserUi {
                     isDataValid = isUserDataValid(email, password);
 
                     if(isDataValid){
-                        MovieUi movieUi = new MovieUi();
-                        movieUi.viewHomeMenu(loggedInUser);
+                        System.out.println("Enter 1 to view your account");
+                        System.out.println("Enter 2 to go to Home Menu");
+                        try {
+                            int option = sc.nextInt();
+                            MovieUi movieUi = new MovieUi();
+                            switch (option) {
+                                case 1: {
+                                    System.out.println(loggedInUser + "\n");
+                                    movieUi.goBackToHomeMenu(scanner, loggedInUser);
+                                }
+                                case 2: {
+                                    movieUi.viewHomeMenu(loggedInUser);
+                                }
+                                default: {
+                                    System.out.println("Your choice is not valid \n");
+                                    break;
+                                }
+                            }
+                        }catch(InputMismatchException e){
+                            System.out.println("Your choice is not valid \n");
+                            break;
+                        }
+
                     }
                 }
                 break;

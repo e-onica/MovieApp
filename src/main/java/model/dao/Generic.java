@@ -29,18 +29,10 @@ public class Generic<T> {
             return result;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Sorry we couldn't find anything \n");
         }
         return null;
     }
 
-//    public List<T> getObjectList(){
-//        try (Session session = Configuration.getSessionFactory().openSession()) {
-//            session.createQuery("SELECT name from MovieModel where ")
-//
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+
 }

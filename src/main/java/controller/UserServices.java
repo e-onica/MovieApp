@@ -17,6 +17,17 @@ public class UserServices {
         genericObject.add(user);
     }
 
+//    public void viewProfileDetails(UserModel user){
+//        try (Session session = Configuration.getSessionFactory().openSession()) {
+//            UserModel userDetails =
+//                    session.createQuery("from UserModel").getSingleResult();
+//
+//            System.out.println();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
 
 
 
