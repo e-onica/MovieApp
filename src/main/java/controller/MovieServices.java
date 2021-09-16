@@ -30,7 +30,7 @@ public class MovieServices {
 
         if (foundMovie != null) {
             System.out.println("----------------------------------------------");
-            foundMovie.printMovieDetails();
+            foundMovie.toString();
             System.out.println("----------------------------------------------");
         }
         return foundMovie;
@@ -73,7 +73,7 @@ public class MovieServices {
     public void viewNewMovies() {
         try (Session session = Configuration.getSessionFactory().openSession()) {
             session.beginTransaction();
-            List<MovieModel> newMovies = session.createQuery("FROM MovieModel where year >= 2010 ").list();
+            List<MovieModel> newMovies = session.createQuery("FROM MovieModel where year > 2020 ").list();
             for (MovieModel movie : newMovies) {
                 System.out.println(movie.printMovieDetails());
             }
