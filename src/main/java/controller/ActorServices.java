@@ -39,9 +39,9 @@ public class ActorServices {
 
     public void getActorSMovies(ActorModel actor) {
         try (Session session = Configuration.getSessionFactory().openSession()) {
-            List<MovieModel> actorMovies =
+            List<String> actorMovies =
                     session.createQuery(
-                            " SELECT m.name, m.genre, m.year from MovieModel m INNER JOIN ActorMovieModel a ON m.id = a.movie where a.actor="
+                            " SELECT m.name from MovieModel m INNER JOIN ActorMovieModel a ON m.id = a.movie where a.actor="
                             + actor.getId()).list();
             System.out.println("\n Filmography: \n");
            actorMovies.forEach(movie -> System.out.println(movie));

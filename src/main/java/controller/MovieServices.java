@@ -47,10 +47,10 @@ public class MovieServices {
             }
             session.beginTransaction();
             MovieModel movie = session.get(MovieModel.class, movieId);
-            movie.setRating((Math.floor((sum / counter) * 100)) / 10);
+            movie.setRating((Math.floor((sum / counter) * 10)) / 10);
             session.save(movie);
             session.getTransaction().commit();
-            return (Math.floor((sum / counter) * 100)) / 10;
+            return (Math.floor((sum / counter) * 10)) / 10;
         } catch (Exception e) {
             e.printStackTrace();
         }
