@@ -70,9 +70,11 @@ public class UserUi {
                                 case 1: {
                                     System.out.println(loggedInUser + "\n");
                                     movieUi.goBackToHomeMenu(scanner, loggedInUser);
+                                    break;
                                 }
                                 case 2: {
                                     movieUi.viewHomeMenu(loggedInUser);
+                                    break;
                                 }
                                 default: {
                                     System.out.println("Your choice is not valid \n");

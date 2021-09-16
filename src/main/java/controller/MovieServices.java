@@ -30,7 +30,7 @@ public class MovieServices {
 
         if (foundMovie != null) {
             System.out.println("----------------------------------------------");
-            foundMovie.toString();
+            System.out.println(foundMovie);
             System.out.println("----------------------------------------------");
         }
         return foundMovie;

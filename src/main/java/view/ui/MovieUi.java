@@ -46,18 +46,20 @@ public class MovieUi {
         System.out.println("Welcome to Home Menu: ");
         System.out.println("----------------------------------------------");
         printHomeMenu();
-        try {
-            int choice = scanner.nextInt();
+
+        int choice = scanner.nextInt();
         switch (choice) {
             case 1: {
                 System.out.println("Top Movies: \n");
                 movieServices.viewTopMovies();
                 goBackToHomeMenu(scanner, user);
+                break;
             }
             case 2: {
                 System.out.println("New Movies: \n");
                 movieServices.viewNewMovies();
                 goBackToHomeMenu(scanner, user);
+                break;
             }
             case 3: {
                 System.out.println("Enter the name of the actor: ");
@@ -65,31 +67,23 @@ public class MovieUi {
                 ActorModel actor = actorServices.searchActorByName(actorName, user);
                 actorServices.getActorSMovies(actor);
                 goBackToHomeMenu(scanner, user);
-
+                break;
             }
             case 4: {
                 System.out.println("Enter the name of the movie: ");
                 String movieName = scanner.next();
                 MovieModel movie = movieServices.searchMovieByName(movieName);
-                if(movie == null){
+                if (movie == null) {
                     viewHomeMenu(user);
-                }else{
+                } else {
                     viewMovieMenu(movie, user, scanner);
                 }
-
+                break;
             }
             case 5: {
                 System.out.println("See you soon!");
                 break;
             }
-            default: {
-                System.out.println("Your choice is not valid \n");
-                viewHomeMenu(user);
-            }
-        }
-        }catch (InputMismatchException e){
-            System.out.println("Your choice is not valid \n");
-            viewHomeMenu(user);
         }
     }
 
@@ -111,7 +105,7 @@ public class MovieUi {
             case 1: {
                 System.out.println("Please rate from 1 to 5 stars");
                 int stars = scanner.nextInt();
-                while(stars>5 || stars == 0){
+                while (stars > 5 || stars == 0) {
                     System.out.println("Please rate from 1 to 5 stars");
                     stars = scanner.nextInt();
                 }
@@ -126,6 +120,7 @@ public class MovieUi {
                 }
                 movieServices.updateMovieRating(movie.getId());
                 viewMovieMenu(movie, user, scanner);
+                break;
             }
             case 2: {
                 System.out.println("Please write your review");
@@ -140,18 +135,22 @@ public class MovieUi {
                     e.printStackTrace();
                 }
                 viewMovieMenu(movie, user, scanner);
+                break;
             }
             case 3: {
                 ReviewServices reviewServices = new ReviewServices();
                 reviewServices.printAllReviews(movie.getId());
                 viewMovieMenu(movie, user, scanner);
+                break;
             }
             case 4: {
                 viewHomeMenu(user);
+                break;
             }
             default: {
                 System.out.println("We could not find any result to your request \n");
-                viewMovieMenu(movie,user, scanner);
+                viewMovieMenu(movie, user, scanner);
+                break;
             }
         }
     }
