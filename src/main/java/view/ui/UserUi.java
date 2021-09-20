@@ -49,6 +49,7 @@ public class UserUi {
                 UserModel user = new UserModel(email, password, userDetail);
                 userServices.addUser(user);
                 logIn();
+                break;
             }
             case 2: {
                 boolean isDataValid = false;
@@ -95,17 +96,16 @@ public class UserUi {
 
     public boolean isUserDataValid(String email, String password) {
         try (Session session = Configuration.getSessionFactory().openSession()) {
-            List<UserModel> users = session.createQuery("from UserModel").getResultList();
-            for (UserModel user : users) {
-                if (email.equals(user.getEmail()) && password.equals(user.getPassword())) {
+            UserModel user = (UserModel) session.createQuery(
+                    "from UserModel where email=" + "\'" + email + "\'" +
+                            " and password=" + "\'" + password + "\'").getSingleResult();
                     this.loggedInUser = user;
                     return true;
-                }
-            }
-            System.out.println("Incorrect log in data, please try again");
+
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Incorrect log in data, please try again");
         }
+
         return false;
     }
 

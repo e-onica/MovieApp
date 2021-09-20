@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "movie", uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
+@Table(name = "movie")
 public class MovieModel {
 
     @Id

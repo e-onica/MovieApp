@@ -62,7 +62,7 @@ public class MovieServices {
             session.beginTransaction();
             List<MovieModel> topMovies = session.createQuery("FROM MovieModel where rating >= 4 ").list();
             for (MovieModel movie : topMovies) {
-                System.out.println("----" + movie.toString());
+                System.out.println(movie);
             }
             System.out.println("----------------------------------------------");
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class MovieServices {
             session.beginTransaction();
             List<MovieModel> newMovies = session.createQuery("FROM MovieModel where year > 2020 ").list();
             for (MovieModel movie : newMovies) {
-                System.out.println(movie.printMovieDetails());
+                System.out.println(movie);
             }
             System.out.println("----------------------------------------------");
         } catch (Exception e) {

@@ -18,6 +18,37 @@ public class MovieUi {
     MovieServices movieServices = new MovieServices();
     ActorServices actorServices = new ActorServices();
 
+    public void viewHomeMenu(UserModel user) {
+        Scanner scanner = new Scanner(System.in).useDelimiter("\n");
+        System.out.println("Welcome to Home Menu: ");
+        System.out.println("----------------------------------------------");
+        printHomeMenu();
+
+        int choice = scanner.nextInt();
+        switch (choice) {
+            case 1: {
+                getTopMovies(scanner, user);
+                break;
+            }
+            case 2: {
+                getNewMovies(scanner, user);
+                break;
+            }
+            case 3: {
+                getActorAndFilmography(scanner, user);
+                break;
+            }
+            case 4: {
+                getMovie(scanner, user);
+                break;
+            }
+            case 5: {
+                System.out.println("See you soon!");
+                break;
+            }
+        }
+    }
+
     private void printHomeMenu() {
 
         List<String> menuOptions = new ArrayList<>();
@@ -41,47 +72,60 @@ public class MovieUi {
         viewHomeMenu(user);
     }
 
-    public void viewHomeMenu(UserModel user) {
-        Scanner scanner = new Scanner(System.in).useDelimiter("\n");
-        System.out.println("Welcome to Home Menu: ");
-        System.out.println("----------------------------------------------");
-        printHomeMenu();
+    private void getTopMovies(Scanner scanner, UserModel user){
+        System.out.println("Top Movies: \n");
+        movieServices.viewTopMovies();
+        goBackToHomeMenu(scanner, user);
+    }
 
-        int choice = scanner.nextInt();
-        switch (choice) {
+    private void getActorAndFilmography(Scanner scanner, UserModel user){
+        System.out.println("Enter the name of the actor: ");
+        String actorName = scanner.next();
+        ActorModel actor = actorServices.searchActorByName(actorName, user);
+        actorServices.getActorSMovies(actor);
+        goBackToHomeMenu(scanner, user);
+    }
+    private void getNewMovies(Scanner scanner, UserModel user){
+        System.out.println("New Movies: \n");
+        movieServices.viewNewMovies();
+        goBackToHomeMenu(scanner, user);
+    }
+    private void getMovie(Scanner scanner, UserModel user){
+        System.out.println("Enter the name of the movie: ");
+        String movieName = scanner.next();
+        MovieModel movie = movieServices.searchMovieByName(movieName);
+        if (movie == null) {
+            viewHomeMenu(user);
+        } else {
+            viewMovieMenu(movie, user, scanner);
+        }
+    }
+
+
+
+    public void viewMovieMenu(MovieModel movie, UserModel user, Scanner scanner) {
+        printMovieMenu();
+        int userOption = scanner.nextInt();
+        switch (userOption) {
             case 1: {
-                System.out.println("Top Movies: \n");
-                movieServices.viewTopMovies();
-                goBackToHomeMenu(scanner, user);
+               rateMovie(scanner, user, movie);
                 break;
             }
             case 2: {
-                System.out.println("New Movies: \n");
-                movieServices.viewNewMovies();
-                goBackToHomeMenu(scanner, user);
+                reviewMovie(scanner, user, movie);
                 break;
             }
             case 3: {
-                System.out.println("Enter the name of the actor: ");
-                String actorName = scanner.next();
-                ActorModel actor = actorServices.searchActorByName(actorName, user);
-                actorServices.getActorSMovies(actor);
-                goBackToHomeMenu(scanner, user);
+                seeAllReviews(scanner, user, movie);
                 break;
             }
             case 4: {
-                System.out.println("Enter the name of the movie: ");
-                String movieName = scanner.next();
-                MovieModel movie = movieServices.searchMovieByName(movieName);
-                if (movie == null) {
-                    viewHomeMenu(user);
-                } else {
-                    viewMovieMenu(movie, user, scanner);
-                }
+                viewHomeMenu(user);
                 break;
             }
-            case 5: {
-                System.out.println("See you soon!");
+            default: {
+                System.out.println("We could not find any result to your request \n");
+                viewMovieMenu(movie, user, scanner);
                 break;
             }
         }
@@ -98,60 +142,44 @@ public class MovieUi {
         }
     }
 
-    public void viewMovieMenu(MovieModel movie, UserModel user, Scanner scanner) {
-        printMovieMenu();
-        int userOption = scanner.nextInt();
-        switch (userOption) {
-            case 1: {
-                System.out.println("Please rate from 1 to 5 stars");
-                int stars = scanner.nextInt();
-                while (stars > 5 || stars == 0) {
-                    System.out.println("Please rate from 1 to 5 stars");
-                    stars = scanner.nextInt();
-                }
-                System.out.println("Your rating has been successfully registered \n");
-                RatingModel rating = new RatingModel(stars, user, movie);
-                try (Session session = Configuration.getSessionFactory().openSession()) {
-                    Transaction transaction = session.beginTransaction();
-                    session.save(rating);
-                    transaction.commit();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                movieServices.updateMovieRating(movie.getId());
-                viewMovieMenu(movie, user, scanner);
-                break;
-            }
-            case 2: {
-                System.out.println("Please write your review");
-                String review = scanner.next();
-                System.out.println("Your review was added to this movie's reviews \n");
-                ReviewModel reviewModel = new ReviewModel(review, user, movie);
-                try (Session session = Configuration.getSessionFactory().openSession()) {
-                    Transaction transaction = session.beginTransaction();
-                    session.save(reviewModel);
-                    transaction.commit();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                viewMovieMenu(movie, user, scanner);
-                break;
-            }
-            case 3: {
-                ReviewServices reviewServices = new ReviewServices();
-                reviewServices.printAllReviews(movie.getId());
-                viewMovieMenu(movie, user, scanner);
-                break;
-            }
-            case 4: {
-                viewHomeMenu(user);
-                break;
-            }
-            default: {
-                System.out.println("We could not find any result to your request \n");
-                viewMovieMenu(movie, user, scanner);
-                break;
-            }
+    private void rateMovie(Scanner scanner, UserModel user, MovieModel movie){
+        System.out.println("Please rate from 1 to 5 stars");
+        int stars = scanner.nextInt();
+        while (stars > 5 || stars == 0) {
+            System.out.println("Please rate from 1 to 5 stars");
+            stars = scanner.nextInt();
         }
+        System.out.println("Your rating has been successfully registered \n");
+        RatingModel rating = new RatingModel(stars, user, movie);
+        try (Session session = Configuration.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.save(rating);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        movieServices.updateMovieRating(movie.getId());
+        viewMovieMenu(movie, user, scanner);
+    }
+
+    private void reviewMovie(Scanner scanner, UserModel user, MovieModel movie){
+        System.out.println("Please write your review");
+        String review = scanner.next();
+        System.out.println("Your review was added to this movie's reviews \n");
+        ReviewModel reviewModel = new ReviewModel(review, user, movie);
+        try (Session session = Configuration.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.save(reviewModel);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        viewMovieMenu(movie, user, scanner);
+    }
+
+    private void seeAllReviews(Scanner scanner, UserModel user, MovieModel movie){
+        ReviewServices reviewServices = new ReviewServices();
+        reviewServices.printAllReviews(movie.getId());
+        viewMovieMenu(movie, user, scanner);
     }
 }

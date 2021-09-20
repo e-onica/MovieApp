@@ -14,10 +14,16 @@ public class ReviewServices {
         try (Session session = Configuration.getSessionFactory().openSession()) {
             List<String> reviews = session.createQuery(
                     "select description from ReviewModel where id_movie=" + movieId).getResultList();
-            System.out.println("----------------------------------------------");
-            System.out.println("Reviews: ");
-            reviews.forEach(review -> System.out.println(review));
-            System.out.println("----------------------------------------------");
+            if(reviews.size() == 0){
+                System.out.println("----------------------------------------------");
+                System.out.println("There are no reviews for this movie yet.");
+                System.out.println("----------------------------------------------");
+            }else {
+                System.out.println("----------------------------------------------");
+                System.out.println("Reviews: ");
+                reviews.forEach(review -> System.out.println(review));
+                System.out.println("----------------------------------------------");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
