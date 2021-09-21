@@ -6,15 +6,13 @@ import model.dto.UserDetailModel;
 import model.dto.UserModel;
 import org.hibernate.Session;
 
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class UserUi {
 
     static UserModel loggedInUser = new UserModel();
+    static List<String> countries = Arrays.asList("Romania", "Brazil", "Russia", "Australia", "Moldova", "SUA", "France",
+            "England", "Germany");
 
     public void logIn() {
 
@@ -23,33 +21,19 @@ public class UserUi {
 
         Scanner scanner = new Scanner(System.in).useDelimiter("\n");
         int choice = scanner.nextInt();
-        while(choice != 1 && choice !=2){
+        while (choice != 1 && choice != 2) {
             System.out.println("Your choice is not valid");
             System.out.println("Enter 1 for registration");
             System.out.println("Enter 2 for Log in, if you already have an account");
             choice = scanner.nextInt();
         }
 
-        UserServices userServices = new UserServices();
 
         switch (choice) {
             case 1: {
-                Scanner sc = new Scanner(System.in).useDelimiter("\n");
-                System.out.println("Enter e-mail");
-                String email = sc.next();
-                System.out.println("Enter password");
-                String password = sc.next();
-                System.out.println("Enter country");
-                String country = sc.next();
-                System.out.println("Enter age");
-                int age = sc.nextInt();
-                System.out.println("Enter gender ");
-                String gender = sc.next();
-                UserDetailModel userDetail = new UserDetailModel(country, age, gender);
-                UserModel user = new UserModel(email, password, userDetail);
-                userServices.addUser(user);
-                logIn();
-                break;
+                if (isRegistrationValid()) {
+                    break;
+                }
             }
             case 2: {
                 boolean isDataValid = false;
@@ -61,7 +45,7 @@ public class UserUi {
                     String password = sc.next();
                     isDataValid = isUserDataValid(email, password);
 
-                    if(isDataValid){
+                    if (isDataValid) {
                         System.out.println("Enter 1 to view your account");
                         System.out.println("Enter 2 to go to Home Menu");
                         try {
@@ -82,7 +66,7 @@ public class UserUi {
                                     break;
                                 }
                             }
-                        }catch(InputMismatchException e){
+                        } catch (InputMismatchException e) {
                             System.out.println("Your choice is not valid \n");
                             break;
                         }
@@ -99,14 +83,67 @@ public class UserUi {
             UserModel user = (UserModel) session.createQuery(
                     "from UserModel where email=" + "\'" + email + "\'" +
                             " and password=" + "\'" + password + "\'").getSingleResult();
-                    this.loggedInUser = user;
-                    return true;
+            this.loggedInUser = user;
+            return true;
 
         } catch (Exception e) {
             System.out.println("Incorrect log in data, please try again");
         }
 
         return false;
+    }
+
+    public boolean isRegistrationValid() {
+
+        UserServices userServices = new UserServices();
+
+        Scanner sc = new Scanner(System.in).useDelimiter("\n");
+        System.out.println("Enter e-mail");
+        String email = sc.next(); //2 cond - 1. sa contina cel putin 11 caract 2. sa contina @gmail.com @yahoo.com @
+        while (email.length() < 11 || (!email.endsWith("@gmail.com") && !email.endsWith("@yahoo.com"))) {
+            System.out.println("Your email is less than 11 characters, please re-enter again ");
+            email = sc.next();
+        }
+        System.out.println("Enter password four characters minimum");
+        String password = sc.next();
+        while (password.length() < 4) {
+            password = sc.next();
+            System.out.println("Please re-enter password");
+        }
+        System.out.println("Enter country");
+        String country = sc.next();
+        boolean isCountryValid = false;
+        for (String countryAux : countries) {
+            if (countryAux.equals(country)) {
+                isCountryValid = true;
+            }
+        }
+        if (!isCountryValid) {
+            System.out.println("The website is not available in your country");
+
+        }
+        System.out.println("Enter age");
+        int age = sc.nextInt();
+        if (age < 14) {
+            System.out.println("Minimum age for registration is 14 years old");
+
+        }
+        System.out.println("Enter gender F/M");
+        String gender = sc.next();
+        if (!(gender.equals("F") || gender.equals("M"))) {
+            System.out.println("Please re-enter your gender");
+            gender = sc.next();
+        }
+        System.out.println("NOTHING");
+
+        UserDetailModel userDetail = new UserDetailModel(country, age, gender);
+        UserModel user = new UserModel(email, password, userDetail);
+        userServices.addUser(user);
+
+
+        logIn();
+
+        return isCountryValid;
     }
 
 }

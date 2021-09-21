@@ -9,7 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.ArrayList;
-import java.util.InputMismatchException;
+
 import java.util.List;
 import java.util.Scanner;
 

@@ -10,6 +10,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import view.ui.MovieUi;
 
+import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ActorServices {
@@ -40,13 +42,15 @@ public class ActorServices {
     public void getActorSMovies(ActorModel actor) {
         try (Session session = Configuration.getSessionFactory().openSession()) {
 
-              List<MovieModel> movies =  session.createQuery(
-                            " select m.name,m.genre, m.year, " +
-                                    "m.duration, m.rating FROM MovieModel m " +
+                    Query query =   session.createQuery(
+                            " select a.movie " +
+                                    " FROM MovieModel m " +
                                     "INNER JOIN ActorMovieModel a ON m.id = a.movie where a.actor="
-                                    + actor.getId()).list();
+                                    + actor.getId());
+            List<MovieModel> movies  = (ArrayList<MovieModel>) query.getResultList();
+
             System.out.println("\n Filmography: \n");
-           movies.forEach(movie -> System.out.println(movie));
+           movies.forEach(movie -> System.out.println(movie.printMovieDetails()));
             System.out.println();
         } catch (Exception e) {
             e.printStackTrace();

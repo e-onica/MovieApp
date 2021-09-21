@@ -83,10 +83,10 @@ public class ActorMovieServices {
         );
 
         MovieModel movie = new MovieModel(
-                "Titanic",
-                1997,
-                "Romance/Drama",
-                "3h 14m");
+                "The Wolf of Wall Street",
+                2013,
+                "Drama/Comedy",
+                "3h");
 
         ActorMovieServices actorMovieServices = new ActorMovieServices();
         actorMovieServices.addActorMovie(actor, movie);
